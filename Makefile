@@ -26,8 +26,11 @@ LN_FLAGS := -sf
 
 # Set compiler
 CC := gcc
+LDFLAGS = -L./lib
+LDLIBS := 
 CFLAGS := -Wall -Wextra -fPIC
-COMPILE = $(CC) $(CFLAGS) $(INC)
+COMPILE = $(CC) $(CFLAGS)
+
 DYNAMIC_LIB_NAME := lib$(PROJECT)
 DYNAMIC_LIB_VERSION := 1.0
 DYNAMIC_LIB := $(DYNAMIC_LIB_DIR)/$(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_EXT)
@@ -48,19 +51,17 @@ all: default
 $(OBJS_DIR)/%.$(OBJ_EXT): $(SRCS_DIR)/%.$(SRC_EXT)
 	@echo "Building project obj file: $<"
 	@$(MKDIR) $(MKDIR_FLAGS) $(dir $@)
-	@$(COMPILE) -c -o $@ $<
+	@$(COMPILE) $(INC) -o $@ -c $<
 
 default: $(OBJECTS)
 	@echo "Building project bin file: $(BIN)"
 	@$(MKDIR) $(MKDIR_FLAGS) $(BIN_DIR)
-	@$(CC) $(CFLAGS) -o $(BIN) $^
+	@$(COMPILE) $(LDFLAGS) $(LDLIBS) -o $(BIN) $^
 
-dylib: compile_source
-
-compile_source: $(OBJECTS)
+dylib: $(OBJECTS)
 	@echo "Generate project dynamic lib file: $(DYNAMIC_LIB).$(DYNAMIC_LIB_VERSION)"
 	@$(MKDIR) $(MKDIR_FLAGS) $(DYNAMIC_LIB_DIR)
-	@$(CC) $(CFLAGS) $(DYNAMIC_LIB_FLAGS) -o $(DYNAMIC_LIB).$(DYNAMIC_LIB_VERSION) $^
+	@$(COMPILE) $(DYNAMIC_LIB_FLAGS) -o $(DYNAMIC_LIB).$(DYNAMIC_LIB_VERSION) $^
 	@$(LN) $(LN_FLAGS) $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_EXT).$(DYNAMIC_LIB_VERSION) $(DYNAMIC_LIB) 
 
 clean:
