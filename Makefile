@@ -27,7 +27,7 @@ LN_FLAGS := -sf
 # Set compiler
 CC := gcc
 LDFLAGS = -L./lib
-LDLIBS := 
+LDLIBS := -llibc
 CFLAGS := -Wall -Wextra -fPIC
 COMPILE = $(CC) $(CFLAGS)
 
@@ -56,7 +56,7 @@ $(OBJS_DIR)/%.$(OBJ_EXT): $(SRCS_DIR)/%.$(SRC_EXT)
 default: $(OBJECTS)
 	@echo "Building project bin file: $(BIN)"
 	@$(MKDIR) $(MKDIR_FLAGS) $(BIN_DIR)
-	@$(COMPILE) $(LDFLAGS) $(LDLIBS) -o $(BIN) $^
+	@$(COMPILE) -o $(BIN) $^ $(LDFLAGS) $(LDLIBS)
 
 dylib: $(OBJECTS)
 	@echo "Generate project dynamic lib file: $(DYNAMIC_LIB).$(DYNAMIC_LIB_VERSION)"
