@@ -59,10 +59,14 @@ default: $(OBJECTS)
 	@$(COMPILE) -o $(BIN) $^ $(LDFLAGS) $(LDLIBS)
 
 dylib: $(OBJECTS)
+ifneq ($(OS),Windows_NT)
 	@echo "Generate project dynamic lib file: $(DYNAMIC_LIB).$(DYNAMIC_LIB_VERSION)"
-	@$(MKDIR) $(MKDIR_FLAGS) $(DYNAMIC_LIB_DIR)
 	@$(COMPILE) $(DYNAMIC_LIB_FLAGS) -o $(DYNAMIC_LIB).$(DYNAMIC_LIB_VERSION) $^ $(LDFLAGS) $(LDLIBS)
 	@$(LN) $(LN_FLAGS) $(DYNAMIC_LIB_NAME).$(DYNAMIC_LIB_EXT).$(DYNAMIC_LIB_VERSION) $(DYNAMIC_LIB) 
+else
+	@echo "Generate project dynamic lib file: $(DYNAMIC_LIB)"
+	@$(COMPILE) $(DYNAMIC_LIB_FLAGS) -o $(DYNAMIC_LIB) $^ $(LDFLAGS) $(LDLIBS)
+endif
 
 clean:
 	$(RM) $(RM_FLAGS) $(BUILD_DIR)
